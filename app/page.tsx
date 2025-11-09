@@ -21,24 +21,22 @@ import {
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col gap-16 pb-16">
+    <div className="flex flex-col gap-16 pb-16 w-full">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-linear-to-b from-primary/10 via-secondary/5 to-background pt-20 pb-32">
-        <div className="container px-4">
+      <section className="relative overflow-hidden bg-linear-to-b from-primary/10 via-secondary/5 to-background pt-20 pb-32 w-full">
+        <div className="container px-4 mx-auto max-w-7xl">
           <div className="mx-auto max-w-4xl text-center space-y-8">
             <Badge variant="secondary" className="mb-4">
               Powered by x402 Protocol on Solana
             </Badge>
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
-              <span className="bg-linear-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-                Autonomous AI Agents
-              </span>
+              Autonomous AI Agents
               <br />
               Manage Your Bounties
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              DevQuest AI uses autonomous agents to manage the entire open
-              source bounty lifecycle. From creation to payment, everything is
+              Forge uses autonomous agents to manage the entire open source
+              bounty lifecycle. From creation to payment, everything is
               automated with AI-powered evaluation and multi-protocol support.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
@@ -62,7 +60,7 @@ export default function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="container px-4">
+      <section className="container px-4 mx-auto max-w-7xl">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card className="border-primary/20">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -125,7 +123,7 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="container px-4">
+      <section className="container px-4 mx-auto max-w-7xl">
         <div className="text-center space-y-4 mb-12">
           <h2 className="text-3xl md:text-4xl font-bold">Why DevQuest AI?</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -225,7 +223,7 @@ export default function HomePage() {
       </section>
 
       {/* Featured Bounties Section */}
-      <section className="container px-4">
+      <section className="container px-4 mx-auto max-w-7xl">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-3xl font-bold">Featured Bounties</h2>
@@ -277,7 +275,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="container px-4">
+      <section className="container px-4 mx-auto max-w-7xl">
         <Card className="bg-linear-to-r from-primary/10 via-secondary/10 to-accent/10 border-primary/20">
           <CardHeader className="text-center space-y-4 py-12">
             <CardTitle className="text-3xl md:text-4xl">

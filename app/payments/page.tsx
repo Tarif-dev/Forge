@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -13,9 +14,9 @@ import {
   DollarSign,
   TrendingUp,
   ArrowUpRight,
-  ArrowDownRight,
   Wallet,
   Zap,
+  ExternalLink,
 } from "lucide-react";
 import {
   Table,
@@ -26,14 +27,88 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+interface Payment {
+  id: string;
+  amount: number;
+  tokenMint: string;
+  transactionHash: string | null;
+  protocol: string;
+  status: string;
+  createdAt: string;
+  payer: {
+    username: string | null;
+    walletAddress: string;
+  };
+  receiver: {
+    username: string | null;
+    walletAddress: string;
+  };
+  application?: {
+    bounty: {
+      title: string;
+    };
+  };
+}
+
 export default function PaymentsPage() {
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedTab, setSelectedTab] = useState("all");
+
+  useEffect(() => {
+    fetchPayments();
+  }, []);
+
+  const fetchPayments = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("/api/payments");
+      const data = await response.json();
+      setPayments(data);
+    } catch (error) {
+      console.error("Error fetching payments:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const stats = {
+    totalVolume: payments.reduce((sum, p) => sum + p.amount, 0),
+    totalTransactions: payments.length,
+    successRate:
+      payments.length > 0
+        ? (
+            (payments.filter((p) => p.status === "COMPLETED").length /
+              payments.length) *
+            100
+          ).toFixed(1)
+        : "0",
+    protocols: [...new Set(payments.map((p) => p.protocol))].length,
+  };
+
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (diff < 60) return `${diff} sec ago`;
+    if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} hr ago`;
+    return `${Math.floor(diff / 86400)} days ago`;
+  };
+
+  const filteredPayments =
+    selectedTab === "all"
+      ? payments
+      : payments.filter((p) => p.protocol === selectedTab);
+
   return (
-    <div className="container px-4 py-12 space-y-8">
+    <div className="container px-4 py-12 space-y-8 mx-auto max-w-7xl w-full">
       {/* Header */}
       <div className="space-y-4">
         <h1 className="text-4xl font-bold">Payment Dashboard</h1>
         <p className="text-lg text-muted-foreground">
-          Track payments across multiple protocols powered by x402
+          Track payments across Solana blockchain powered by AI agents
         </p>
       </div>
 
@@ -45,9 +120,11 @@ export default function PaymentsPage() {
             <DollarSign className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$2.4M</div>
+            <div className="text-2xl font-bold">
+              ${stats.totalVolume.toLocaleString()}
+            </div>
             <p className="text-xs flex items-center gap-1 text-green-600">
-              <TrendingUp className="w-3 h-3" /> +22% from last month
+              <TrendingUp className="w-3 h-3" /> Real-time tracking
             </p>
           </CardContent>
         </Card>
@@ -57,8 +134,8 @@ export default function PaymentsPage() {
             <Zap className="h-4 w-4 text-secondary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">3,247</div>
-            <p className="text-xs text-muted-foreground">+18% this week</p>
+            <div className="text-2xl font-bold">{stats.totalTransactions}</div>
+            <p className="text-xs text-muted-foreground">All time</p>
           </CardContent>
         </Card>
         <Card>
@@ -67,7 +144,7 @@ export default function PaymentsPage() {
             <TrendingUp className="h-4 w-4 text-accent" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">99.2%</div>
+            <div className="text-2xl font-bold">{stats.successRate}%</div>
             <p className="text-xs text-muted-foreground">
               Excellent performance
             </p>
@@ -81,7 +158,7 @@ export default function PaymentsPage() {
             <Wallet className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">5</div>
+            <div className="text-2xl font-bold">{stats.protocols}</div>
             <p className="text-xs text-muted-foreground">
               Multi-protocol support
             </p>
@@ -89,330 +166,119 @@ export default function PaymentsPage() {
         </Card>
       </div>
 
-      {/* Protocol Breakdown */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        {protocols.map((protocol) => (
-          <Card
-            key={protocol.name}
-            className="hover:border-primary/50 transition-colors"
-          >
-            <CardHeader>
-              <CardTitle className="text-lg">{protocol.name}</CardTitle>
-              <CardDescription>{protocol.description}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="text-2xl font-bold">{protocol.volume}</div>
-              <div className="text-xs text-muted-foreground">
-                {protocol.transactions} transactions
-              </div>
-              <Badge variant="outline" className="text-xs">
-                {protocol.percentage}% of total
-              </Badge>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Recent Transactions */}
+      {/* Transaction History */}
       <Card>
         <CardHeader>
-          <CardTitle>Recent Transactions</CardTitle>
+          <CardTitle>Payment History</CardTitle>
           <CardDescription>
-            Latest payment transactions across all protocols
+            Real-time payment transactions on Solana devnet
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="all">
+          <Tabs value={selectedTab} onValueChange={setSelectedTab}>
             <TabsList>
-              <TabsTrigger value="all">All Transactions</TabsTrigger>
-              <TabsTrigger value="x402">x402</TabsTrigger>
-              <TabsTrigger value="cash">CASH</TabsTrigger>
-              <TabsTrigger value="atxp">ATXP</TabsTrigger>
-              <TabsTrigger value="acp">ACP/AP2</TabsTrigger>
+              <TabsTrigger value="all">All Payments</TabsTrigger>
+              <TabsTrigger value="SOL">SOL</TabsTrigger>
+              <TabsTrigger value="USDC">USDC</TabsTrigger>
             </TabsList>
-            <TabsContent value="all" className="space-y-4">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Transaction</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Protocol</TableHead>
-                    <TableHead>Bounty</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Time</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {transactions.map((tx) => (
-                    <TableRow key={tx.id}>
-                      <TableCell className="font-mono text-xs">
-                        {tx.hash}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          {tx.type === "outgoing" ? (
-                            <ArrowUpRight className="w-4 h-4 text-red-500" />
-                          ) : (
-                            <ArrowDownRight className="w-4 h-4 text-green-500" />
-                          )}
-                          <span className="capitalize">{tx.type}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{tx.protocol}</Badge>
-                      </TableCell>
-                      <TableCell className="max-w-[200px] truncate">
-                        {tx.bounty}
-                      </TableCell>
-                      <TableCell className="font-semibold">
-                        {tx.amount}
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={
-                            tx.status === "completed"
-                              ? "default"
-                              : tx.status === "pending"
-                              ? "secondary"
-                              : "destructive"
-                          }
-                        >
-                          {tx.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {tx.time}
-                      </TableCell>
+            <TabsContent value={selectedTab} className="space-y-4">
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  <p className="mt-4 text-muted-foreground">
+                    Loading payments...
+                  </p>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>From</TableHead>
+                      <TableHead>To</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead>Bounty</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Transaction</TableHead>
+                      <TableHead>Time</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TabsContent>
-            <TabsContent value="x402">
-              <div className="text-center py-8 text-muted-foreground">
-                x402 protocol transactions will be displayed here
-              </div>
-            </TabsContent>
-            <TabsContent value="cash">
-              <div className="text-center py-8 text-muted-foreground">
-                Phantom CASH transactions will be displayed here
-              </div>
-            </TabsContent>
-            <TabsContent value="atxp">
-              <div className="text-center py-8 text-muted-foreground">
-                ATXP protocol transactions will be displayed here
-              </div>
-            </TabsContent>
-            <TabsContent value="acp">
-              <div className="text-center py-8 text-muted-foreground">
-                ACP/AP2 protocol transactions will be displayed here
-              </div>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredPayments.length === 0 ? (
+                      <TableRow>
+                        <TableCell
+                          colSpan={7}
+                          className="text-center py-8 text-muted-foreground"
+                        >
+                          No payments found
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      filteredPayments.map((payment) => (
+                        <TableRow key={payment.id}>
+                          <TableCell className="font-medium">
+                            {payment.payer.username ||
+                              payment.payer.walletAddress.slice(0, 8) + "..."}
+                          </TableCell>
+                          <TableCell>
+                            {payment.receiver.username ||
+                              payment.receiver.walletAddress.slice(0, 8) +
+                                "..."}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-1">
+                              <ArrowUpRight className="w-4 h-4 text-green-600" />
+                              <span className="font-medium">
+                                ${payment.amount}
+                              </span>
+                              <Badge variant="outline" className="text-xs">
+                                {payment.protocol}
+                              </Badge>
+                            </div>
+                          </TableCell>
+                          <TableCell className="max-w-xs truncate">
+                            {payment.application?.bounty.title || "N/A"}
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              variant={
+                                payment.status === "COMPLETED"
+                                  ? "default"
+                                  : payment.status === "PENDING"
+                                  ? "secondary"
+                                  : "destructive"
+                              }
+                            >
+                              {payment.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {payment.transactionHash ? (
+                              <a
+                                href={`https://explorer.solana.com/tx/${payment.transactionHash}?cluster=devnet`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1 text-primary hover:underline"
+                              >
+                                View
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            ) : (
+                              <span className="text-muted-foreground">N/A</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">
+                            {formatTime(payment.createdAt)}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              )}
             </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
-
-      {/* Payment Analytics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Top Recipients</CardTitle>
-            <CardDescription>
-              Contributors with highest earnings
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {topRecipients.map((recipient, index) => (
-                <div
-                  key={recipient.address}
-                  className="flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-bold">
-                      {index + 1}
-                    </div>
-                    <div>
-                      <div className="font-medium">{recipient.name}</div>
-                      <div className="text-xs text-muted-foreground font-mono">
-                        {recipient.address}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-bold">{recipient.amount}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {recipient.transactions} txs
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Payment Methods</CardTitle>
-            <CardDescription>Distribution by payment protocol</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {protocols.map((protocol) => (
-                <div key={protocol.name} className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium">{protocol.name}</span>
-                    <span className="text-muted-foreground">
-                      {protocol.percentage}%
-                    </span>
-                  </div>
-                  <div className="w-full h-2 bg-secondary/20 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-primary transition-all duration-300"
-                      style={{ width: `${protocol.percentage}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
     </div>
   );
 }
-
-const protocols = [
-  {
-    name: "x402",
-    description: "HTTP-402 Protocol",
-    volume: "$1.2M",
-    transactions: 1423,
-    percentage: 48,
-  },
-  {
-    name: "CASH",
-    description: "Phantom CASH",
-    volume: "$687K",
-    transactions: 892,
-    percentage: 28,
-  },
-  {
-    name: "ATXP",
-    description: "ATXP Protocol",
-    volume: "$342K",
-    transactions: 534,
-    percentage: 14,
-  },
-  {
-    name: "ACP",
-    description: "ACP Protocol",
-    volume: "$156K",
-    transactions: 287,
-    percentage: 7,
-  },
-  {
-    name: "AP2",
-    description: "AP2 Protocol",
-    volume: "$78K",
-    transactions: 111,
-    percentage: 3,
-  },
-];
-
-const transactions = [
-  {
-    id: 1,
-    hash: "0x7a8b9c...def456",
-    type: "outgoing",
-    protocol: "x402",
-    bounty: "Implement OAuth2 Authentication",
-    amount: "500 USDC",
-    status: "completed",
-    time: "2 min ago",
-  },
-  {
-    id: 2,
-    hash: "0x3f4e5d...abc123",
-    type: "outgoing",
-    protocol: "CASH",
-    bounty: "Design Mobile UI Components",
-    amount: "750 USDC",
-    status: "completed",
-    time: "15 min ago",
-  },
-  {
-    id: 3,
-    hash: "0x1a2b3c...xyz789",
-    type: "outgoing",
-    protocol: "ATXP",
-    bounty: "Optimize Database Queries",
-    amount: "400 USDC",
-    status: "pending",
-    time: "32 min ago",
-  },
-  {
-    id: 4,
-    hash: "0x9d8e7f...ghi012",
-    type: "incoming",
-    protocol: "x402",
-    bounty: "Smart Contract Audit",
-    amount: "2000 USDC",
-    status: "completed",
-    time: "1 hour ago",
-  },
-  {
-    id: 5,
-    hash: "0x6c5d4e...jkl345",
-    type: "outgoing",
-    protocol: "ACP",
-    bounty: "API Integration",
-    amount: "325 USDC",
-    status: "completed",
-    time: "2 hours ago",
-  },
-  {
-    id: 6,
-    hash: "0x4b3a2c...mno678",
-    type: "outgoing",
-    protocol: "CASH",
-    bounty: "UI/UX Redesign",
-    amount: "850 USDC",
-    status: "completed",
-    time: "3 hours ago",
-  },
-];
-
-const topRecipients = [
-  {
-    name: "Alice.dev",
-    address: "7a8b9c...def456",
-    amount: "$12,340",
-    transactions: 23,
-  },
-  {
-    name: "Bob.eth",
-    address: "3f4e5d...abc123",
-    amount: "$9,850",
-    transactions: 18,
-  },
-  {
-    name: "Charlie.sol",
-    address: "1a2b3c...xyz789",
-    amount: "$8,200",
-    transactions: 15,
-  },
-  {
-    name: "Diana.crypto",
-    address: "9d8e7f...ghi012",
-    amount: "$7,650",
-    transactions: 14,
-  },
-  {
-    name: "Eve.blockchain",
-    address: "6c5d4e...jkl345",
-    amount: "$6,420",
-    transactions: 12,
-  },
-];

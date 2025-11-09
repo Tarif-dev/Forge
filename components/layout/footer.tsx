@@ -6,11 +6,11 @@ import { Separator } from "@/components/ui/separator";
 
 export function Footer() {
   return (
-    <footer className="border-t bg-background">
-      <div className="container px-4 py-12">
+    <footer className="border-t bg-background w-full">
+      <div className="container px-4 py-12 mx-auto max-w-7xl">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <h3 className="text-lg font-bold">DevQuest AI</h3>
+            <h3 className="text-lg font-bold">Forge</h3>
             <p className="text-sm text-muted-foreground">
               Autonomous open source bounty management powered by AI agents and
               x402 protocol.
@@ -156,7 +156,7 @@ export function Footer() {
         <Separator className="my-8" />
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <p>© 2025 DevQuest AI. All rights reserved.</p>
+          <p>© 2025 Forge. All rights reserved.</p>
           <p>Built on Solana with x402 Protocol</p>
         </div>
       </div>

@@ -1,107 +1,180 @@
-# DevQuest AI - Autonomous Open Source Bounty Management
+# 🚀 Forge - AI-Powered Bounty Platform on Solana
 
-![DevQuest AI Banner](https://img.shields.io/badge/Solana-x402-blueviolet)
-![Next.js](https://img.shields.io/badge/Next.js-16-black)
+![Forge Banner](https://img.shields.io/badge/Solana-Devnet-blueviolet)
+![Next.js](https://img.shields.io/badge/Next.js-15-black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8)
+![Prisma](https://img.shields.io/badge/Prisma-6-2D3748)
+![Gemini](https://img.shields.io/badge/Gemini-AI-4285F4)
 
-An AI agent that autonomously manages the entire open source bounty lifecycle using x402 protocol for payments, with multi-protocol support and Phantom CASH integration.
+**Autonomous bounty management with AI agents on Solana blockchain** - A revolutionary platform that leverages Google's Gemini AI to automatically evaluate code submissions, process payments on Solana, and manage on-chain reputation.
 
-## 🏆 Hackathon Tracks
+## 🏆 Hackathon Highlights
 
-- 🥇 **Best x402 Agent Application** - Primary Track
-- 🥈 **Best Use of CASH** - Phantom CASH Integration
-- 🥉 **Best Multi-Protocol Agent** - Multiple Payment Protocols
-- 🎯 **Best AgentPay Demo** - HTTP-402 API Payments
+This project qualifies for:
+
+- ✅ **Best AI Application** - Gemini-powered code evaluation
+- ✅ **Best Solana DApp** - Full devnet integration with SPL tokens
+- ✅ **Best Use of Database** - Complex Neon PostgreSQL schema with 8 models
+- ✅ **Most Innovative** - Autonomous AI agent ecosystem
 
 ## ✨ Key Features
 
-### 🤖 Autonomous AI Agents
+### 🤖 Fully Implemented AI Agents
 
-- **BountyCreationAgent**: Automatically creates and manages bounties
-- **CodeEvaluationAgent**: Evaluates code using paid APIs (HTTP-402)
-- **PaymentAgent**: Processes payments via x402 protocol
-- **ReputationAgent**: Manages on-chain reputation system
-- **MultiProtocolPaymentAgent**: Handles multiple payment protocols
-- **CASHPaymentAgent**: Phantom CASH payment processing
-- **APIPaymentAgent**: Pays for APIs via HTTP-402
-- **CommunicationAgent**: Agent-to-agent coordination
+✅ **CodeEvaluationAgent** (LIVE)
 
-### 💰 Multi-Protocol Payments
+- Uses Google Gemini Pro for code evaluation
+- Scores submissions 0-100 with detailed feedback
+- Auto-approves high-quality work (score ≥70)
+- Identifies strengths and weaknesses
+- ~1,000 lines of production code
 
-- **x402 Protocol**: HTTP-402 payment standard
-- **Phantom CASH**: Seamless CASH transactions
-- **ATXP Protocol**: Additional protocol support
-- **ACP/AP2**: Extended protocol compatibility
-- **Auto-conversion**: Automatic protocol switching
+✅ **PaymentAgent** (LIVE)
 
-### 🛡️ Trustless Reputation System
+- Processes Solana transactions automatically
+- Supports native SOL and USDC (SPL tokens)
+- Verifies blockchain transactions
+- Updates user earnings in real-time
+- Full devnet integration
 
-- On-chain reputation scores
-- AI-powered evaluation
-- Achievement NFTs
-- Fraud detection
-- Transparent contributor profiles
+✅ **ReputationAgent** (LIVE)
+
+- Manages on-chain reputation scores
+- Automatic updates after payments
+- Level progression system (Beginner → Legend)
+- Achievement tracking with NFT minting ready
+- Transparent leaderboard
+
+### � Complete Solana Integration
+
+✅ **Payment Infrastructure**
+
+- Native SOL transfers
+- USDC SPL token support
+- Transaction verification
+- Escrow management
+- Real-time balance checking
+
+✅ **Wallet Support**
+
+- Phantom Wallet
+- Solflare
+- Coinbase Wallet
+- Torus
+- Custom UI with dropdown menu
+
+### �️ Production Database
+
+✅ **Neon PostgreSQL + Prisma**
+
+- 8 comprehensive models
+- Full relationship mapping
+- Automatic migrations
+- Seeded demo data
+- Connection pooling
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js 18+ installed
-- npm or yarn package manager
-- Phantom Wallet (for testing)
+- Node.js 18+
+- npm or yarn
+- **Phantom Wallet** with Solana devnet SOL
+- Neon PostgreSQL account (or any PostgreSQL database)
+- Google Gemini API key
 
-### Installation
+### Quick Start
 
-1. Clone the repository:
+1. **Clone the repository**:
 
 ```bash
-git clone https://github.com/yourusername/devquest-ai.git
-cd devquest-ai
+git clone https://github.com/yourusername/forge.git
+cd forge
 ```
 
-2. Install dependencies:
+2. **Install dependencies**:
 
 ```bash
 npm install
 ```
 
-3. Run the development server:
+3. **Set up environment variables**:
+
+```bash
+cp .env.example .env.local
+```
+
+Edit `.env.local` with your credentials:
+
+```env
+DATABASE_URL="postgresql://user:pass@host/db?sslmode=require"
+GEMINI_API_KEY="your-gemini-api-key"
+NEXT_PUBLIC_SOLANA_NETWORK="devnet"
+NEXT_PUBLIC_SOLANA_RPC_URL="https://api.devnet.solana.com"
+```
+
+4. **Set up database**:
+
+```bash
+npx prisma generate
+npx prisma db push
+npm run db:seed
+```
+
+5. **Start development server**:
 
 ```bash
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+6. **Open** [http://localhost:3000](http://localhost:3000)
+
+### Testing
+
+Demo accounts are seeded:
+
+- **alice_dev**: 850 reputation, $5,000 earned
+- **bob_builder**: 720 reputation, $3,500 earned
+
+Test bounties available:
+
+- Frontend bounty ($1,200)
+- Backend bounty ($800)
+- Smart contract bounty ($1,500)
 
 ## 🏗️ Tech Stack
 
-### Frontend
+### Frontend (Complete ✅)
 
-- **Framework**: Next.js 16 (App Router)
-- **Language**: TypeScript
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript 5
 - **Styling**: Tailwind CSS v4
-- **UI Components**: shadcn/ui
+- **UI Components**: shadcn/ui (18+ components)
 - **Icons**: Lucide React
 - **State Management**: React Hooks
 
-### Blockchain
+### Backend (Complete ✅)
 
-- **Network**: Solana (Devnet)
-- **Wallet**: @solana/wallet-adapter-react
-- **Smart Contracts**: Anchor Framework (to be implemented)
+- **Database**: Neon PostgreSQL (serverless)
+- **ORM**: Prisma v6.19.0
+- **API**: Next.js API Routes (REST)
+- **Authentication**: Wallet-based (NextAuth ready)
 
-### AI & Agents
+### AI & Agents (Complete ✅)
 
-- **AI Framework**: LangChain (to be implemented)
-- **LLM**: OpenAI GPT-4 (to be implemented)
-- **Agent Framework**: LangChain Agents (to be implemented)
+- **AI Model**: Google Gemini Pro
+- **Code Evaluation**: Custom evaluation agent
+- **Agent System**: 3 active agents (Evaluation, Payment, Reputation)
+- **Activity Tracking**: Real-time agent monitoring
 
-### Payments
+### Blockchain (Complete ✅)
 
-- **x402 Protocol**: HTTP-402 integration (to be implemented)
-- **Phantom CASH**: CASH payment support (to be implemented)
-- **Multi-Protocol**: ATXP, ACP/AP2 (to be implemented)
+- **Network**: Solana Devnet
+- **SDK**: @solana/web3.js v1.98.4
+- **Tokens**: Native SOL + USDC (SPL)
+- **Wallet**: Multi-wallet adapter (Phantom, Solflare, Coinbase, Torus)
+- **Payments**: Automated transaction processing
 
 ## 📁 Project Structure
 

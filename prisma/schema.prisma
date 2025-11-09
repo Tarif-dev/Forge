@@ -1,0 +1,202 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String   @id @default(cuid())
+  walletAddress   String   @unique
+  username        String?
+  email           String?
+  githubUsername  String?
+  avatarUrl       String?
+  bio             String?
+  reputationScore Int      @default(0)
+  totalEarned     Float    @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  createdBounties  Bounty[]      @relation("BountyCreator")
+  applications     Application[]
+  payments         Payment[]
+  reputation       Reputation[]
+  achievements     Achievement[]
+
+  @@index([walletAddress])
+  @@map("users")
+}
+
+enum BountyStatus {
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum BountyDifficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+model Bounty {
+  id              String           @id @default(cuid())
+  title           String
+  description     String
+  reward          Float
+  rewardToken     String           @default("USDC")
+  status          BountyStatus     @default(OPEN)
+  difficulty      BountyDifficulty
+  category        String
+  tags            String[]
+  requirements    String
+  githubRepoUrl   String?
+  githubIssueUrl  String?
+  escrowAddress   String?
+  deadline        DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  completedAt     DateTime?
+
+  // Relations
+  creatorId    String
+  creator      User          @relation("BountyCreator", fields: [creatorId], references: [id])
+  applications Application[]
+  payments     Payment[]
+
+  @@index([status, createdAt])
+  @@index([creatorId])
+  @@map("bounties")
+}
+
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  SUBMITTED
+  APPROVED
+  PAID
+}
+
+model Application {
+  id              String            @id @default(cuid())
+  message         String
+  githubPrUrl     String?
+  status          ApplicationStatus @default(PENDING)
+  aiEvaluation    Json?
+  evaluationScore Float?
+  submittedAt     DateTime?
+  evaluatedAt     DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  // Relations
+  bountyId String
+  bounty   Bounty @relation(fields: [bountyId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+
+  @@index([bountyId, status])
+  @@index([userId])
+  @@map("applications")
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model Payment {
+  id              String        @id @default(cuid())
+  amount          Float
+  token           String        @default("USDC")
+  status          PaymentStatus @default(PENDING)
+  transactionHash String?
+  protocol        String?
+  metadata        Json?
+  createdAt       DateTime      @default(now())
+  completedAt     DateTime?
+
+  // Relations
+  bountyId String
+  bounty   Bounty @relation(fields: [bountyId], references: [id])
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+
+  @@index([status, createdAt])
+  @@index([userId])
+  @@map("payments")
+}
+
+enum AgentType {
+  BOUNTY_CREATION
+  CODE_EVALUATION
+  PAYMENT_PROCESSOR
+  REPUTATION_MANAGER
+  COMMUNICATION
+  FRAUD_DETECTION
+}
+
+model AgentActivity {
+  id          String    @id @default(cuid())
+  agentType   AgentType
+  action      String
+  description String
+  metadata    Json?
+  success     Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+
+  @@index([agentType, createdAt])
+  @@map("agent_activities")
+}
+
+model Reputation {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  category    String
+  score       Int
+  reason      String
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([userId, category])
+  @@map("reputation")
+}
+
+enum AchievementType {
+  FIRST_BOUNTY
+  FIRST_COMPLETION
+  STREAK_7
+  STREAK_30
+  TOP_CONTRIBUTOR
+  CODE_MASTER
+  FAST_RESOLVER
+  COMMUNITY_HELPER
+}
+
+model Achievement {
+  id          String          @id @default(cuid())
+  userId      String
+  user        User            @relation(fields: [userId], references: [id])
+  type        AchievementType
+  name        String
+  description String
+  iconUrl     String?
+  nftMintAddress String?
+  createdAt   DateTime        @default(now())
+
+  @@index([userId])
+  @@map("achievements")
+}
