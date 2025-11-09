@@ -1,36 +1,193 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DevQuest AI - Autonomous Open Source Bounty Management
 
-## Getting Started
+![DevQuest AI Banner](https://img.shields.io/badge/Solana-x402-blueviolet)
+![Next.js](https://img.shields.io/badge/Next.js-16-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8)
 
-First, run the development server:
+An AI agent that autonomously manages the entire open source bounty lifecycle using x402 protocol for payments, with multi-protocol support and Phantom CASH integration.
+
+## 🏆 Hackathon Tracks
+
+- 🥇 **Best x402 Agent Application** - Primary Track
+- 🥈 **Best Use of CASH** - Phantom CASH Integration
+- 🥉 **Best Multi-Protocol Agent** - Multiple Payment Protocols
+- 🎯 **Best AgentPay Demo** - HTTP-402 API Payments
+
+## ✨ Key Features
+
+### 🤖 Autonomous AI Agents
+
+- **BountyCreationAgent**: Automatically creates and manages bounties
+- **CodeEvaluationAgent**: Evaluates code using paid APIs (HTTP-402)
+- **PaymentAgent**: Processes payments via x402 protocol
+- **ReputationAgent**: Manages on-chain reputation system
+- **MultiProtocolPaymentAgent**: Handles multiple payment protocols
+- **CASHPaymentAgent**: Phantom CASH payment processing
+- **APIPaymentAgent**: Pays for APIs via HTTP-402
+- **CommunicationAgent**: Agent-to-agent coordination
+
+### 💰 Multi-Protocol Payments
+
+- **x402 Protocol**: HTTP-402 payment standard
+- **Phantom CASH**: Seamless CASH transactions
+- **ATXP Protocol**: Additional protocol support
+- **ACP/AP2**: Extended protocol compatibility
+- **Auto-conversion**: Automatic protocol switching
+
+### 🛡️ Trustless Reputation System
+
+- On-chain reputation scores
+- AI-powered evaluation
+- Achievement NFTs
+- Fraud detection
+- Transparent contributor profiles
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+ installed
+- npm or yarn package manager
+- Phantom Wallet (for testing)
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/devquest-ai.git
+cd devquest-ai
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🏗️ Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Frontend
 
-## Learn More
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **UI Components**: shadcn/ui
+- **Icons**: Lucide React
+- **State Management**: React Hooks
 
-To learn more about Next.js, take a look at the following resources:
+### Blockchain
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Network**: Solana (Devnet)
+- **Wallet**: @solana/wallet-adapter-react
+- **Smart Contracts**: Anchor Framework (to be implemented)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### AI & Agents
 
-## Deploy on Vercel
+- **AI Framework**: LangChain (to be implemented)
+- **LLM**: OpenAI GPT-4 (to be implemented)
+- **Agent Framework**: LangChain Agents (to be implemented)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Payments
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **x402 Protocol**: HTTP-402 integration (to be implemented)
+- **Phantom CASH**: CASH payment support (to be implemented)
+- **Multi-Protocol**: ATXP, ACP/AP2 (to be implemented)
+
+## 📁 Project Structure
+
+```
+devquest-ai/
+├── app/                      # Next.js App Router
+│   ├── page.tsx             # Home page
+│   ├── bounties/            # Bounty marketplace
+│   ├── agents/              # AI agents dashboard
+│   ├── payments/            # Payment dashboard
+│   ├── reputation/          # Reputation system
+│   ├── layout.tsx           # Root layout
+│   └── globals.css          # Global styles
+├── components/
+│   ├── layout/              # Layout components
+│   │   ├── navbar.tsx       # Navigation bar
+│   │   └── footer.tsx       # Footer
+│   ├── providers/           # Context providers
+│   │   ├── wallet-provider.tsx
+│   │   └── theme-provider.tsx
+│   └── ui/                  # shadcn/ui components
+├── lib/
+│   └── utils.ts             # Utility functions
+├── public/                  # Static assets
+└── package.json             # Dependencies
+```
+
+## 🎨 Features Overview
+
+### Home Page
+
+- Hero section with gradient animations
+- Real-time statistics dashboard
+- Featured bounties showcase
+- Key features presentation
+- Call-to-action sections
+
+### Bounty Marketplace
+
+- Advanced search and filtering
+- Multi-category tabs
+- AI-managed bounty badges
+- Protocol indicators
+- Real-time applicant count
+
+### AI Agents Dashboard
+
+- 8 specialized AI agents
+- Live activity monitoring
+- Performance metrics
+- Task completion tracking
+- Agent capabilities overview
+
+### Payment Dashboard
+
+- Multi-protocol transaction history
+- Payment volume analytics
+- Protocol distribution charts
+- Top recipients leaderboard
+- Real-time transaction status
+
+### Reputation System
+
+- On-chain reputation scores
+- Global leaderboard
+- Achievement categories
+- NFT badges
+- Reputation factors breakdown
+
+## 🚀 Deployment
+
+### Deploy to Vercel
+
+```bash
+npm run build
+vercel deploy
+```
+
+## 🙏 Acknowledgments
+
+- Solana Foundation for the hackathon
+- x402 Protocol team for payment infrastructure
+- Phantom Wallet for CASH support
+- shadcn/ui for beautiful components
+- Next.js team for the amazing framework
+
+---
+
+Built with ❤️ for the Solana x402 Hackathon
