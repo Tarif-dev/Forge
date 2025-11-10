@@ -63,15 +63,20 @@ model Bounty {
   githubIssueUrl  String?
   escrowAddress   String?
   deadline        DateTime?
+  paymentProtocol String?          @default("SOL") // "X402", "CASH", "SOL", "USDC", "AGENTPAY"
+  autoPayThreshold Float?          @default(70) // Score threshold for autonomous payment
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   completedAt     DateTime?
 
   // Relations
-  creatorId    String
-  creator      User          @relation("BountyCreator", fields: [creatorId], references: [id])
-  applications Application[]
-  payments     Payment[]
+  creatorId        String
+  creator          User              @relation("BountyCreator", fields: [creatorId], references: [id])
+  applications     Application[]
+  payments         Payment[]
+  x402Transactions X402Transaction[]
+  cashTransactions CASHTransaction[]
+  paymentMethods   PaymentMethod[]
 
   @@index([status, createdAt])
   @@index([creatorId])
@@ -199,4 +204,80 @@ model Achievement {
 
   @@index([userId])
   @@map("achievements")
+}
+
+// x402 Protocol Integration
+model X402Transaction {
+  id              String    @id @default(cuid())
+  fromAgent       String
+  toAgent         String
+  bountyId        String?
+  bounty          Bounty?   @relation(fields: [bountyId], references: [id])
+  amount          Float
+  transactionHash String    @unique
+  status          String    @default("PENDING")
+  autonomous      Boolean   @default(true)
+  metadata        Json?
+  createdAt       DateTime  @default(now())
+  completedAt     DateTime?
+
+  @@index([fromAgent, toAgent])
+  @@index([status, createdAt])
+  @@map("x402_transactions")
+}
+
+// Phantom CASH Integration
+model CASHTransaction {
+  id              String    @id @default(cuid())
+  fromWallet      String
+  toWallet        String
+  bountyId        String?
+  bounty          Bounty?   @relation(fields: [bountyId], references: [id])
+  amount          Float
+  transactionHash String    @unique
+  fee             Float     @default(0)
+  status          String    @default("PENDING")
+  metadata        Json?
+  createdAt       DateTime  @default(now())
+  completedAt     DateTime?
+
+  @@index([fromWallet, toWallet])
+  @@index([status, createdAt])
+  @@map("cash_transactions")
+}
+
+// AgentPay Integration
+model AgentPayment {
+  id              String    @id @default(cuid())
+  agentId         String
+  paymentType     String    // "API", "LLM", "DATA"
+  provider        String    // "OpenAI", "Anthropic", "Custom API"
+  endpoint        String?
+  amount          Float
+  transactionHash String?
+  status          String    @default("PENDING")
+  tokensUsed      Int?
+  metadata        Json?
+  createdAt       DateTime  @default(now())
+  completedAt     DateTime?
+
+  @@index([agentId, paymentType])
+  @@index([status, createdAt])
+  @@map("agent_payments")
+}
+
+// Payment Method Configuration
+model PaymentMethod {
+  id         String   @id @default(cuid())
+  bountyId   String
+  bounty     Bounty   @relation(fields: [bountyId], references: [id], onDelete: Cascade)
+  method     String   // "X402", "CASH", "SOL", "USDC"
+  enabled    Boolean  @default(true)
+  config     Json?
+  priority   Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([bountyId, enabled])
+  @@map("payment_methods")
 }

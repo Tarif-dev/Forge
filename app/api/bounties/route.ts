@@ -78,6 +78,8 @@ export async function POST(request: NextRequest) {
       githubIssueUrl,
       deadline,
       creatorWalletAddress,
+      paymentProtocol,
+      autoPayThreshold,
     } = body;
 
     // Validate required fields
@@ -122,6 +124,8 @@ export async function POST(request: NextRequest) {
         githubRepoUrl,
         githubIssueUrl,
         deadline: deadline ? new Date(deadline) : null,
+        paymentProtocol: paymentProtocol || "SOL",
+        autoPayThreshold: autoPayThreshold ? parseFloat(autoPayThreshold) : 70,
         creatorId: user.id,
       },
       include: {

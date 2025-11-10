@@ -37,6 +37,8 @@ export function CreateBountyDialog() {
     difficulty: "Intermediate",
     category: "Backend",
     tags: "",
+    paymentProtocol: "X402",
+    autoPayThreshold: "70",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,6 +70,8 @@ export function CreateBountyDialog() {
           category: formData.category,
           tags: formData.tags.split(",").map((tag) => tag.trim()),
           creatorWalletAddress: publicKey.toString(),
+          paymentProtocol: formData.paymentProtocol,
+          autoPayThreshold: parseFloat(formData.autoPayThreshold),
           requirements: {
             codeQuality: "High",
             tests: "Required",
@@ -96,6 +100,8 @@ export function CreateBountyDialog() {
         difficulty: "Intermediate",
         category: "Backend",
         tags: "",
+        paymentProtocol: "X402",
+        autoPayThreshold: "70",
       });
 
       setOpen(false);
@@ -249,6 +255,74 @@ export function CreateBountyDialog() {
                 setFormData({ ...formData, tags: e.target.value })
               }
             />
+          </div>
+
+          {/* HACKATHON INTEGRATION: Payment Protocol Selection */}
+          <div className="border-t pt-4 space-y-4">
+            <div className="flex items-center gap-2">
+              <Label className="text-base font-semibold">
+                💰 Payment Settings
+              </Label>
+              <span className="text-xs text-muted-foreground">
+                (Hackathon Features)
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="paymentProtocol">Payment Protocol</Label>
+                <Select
+                  value={formData.paymentProtocol}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, paymentProtocol: value })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="X402">🤖 x402 Autonomous</SelectItem>
+                    <SelectItem value="CASH">⚡ Phantom CASH</SelectItem>
+                    <SelectItem value="SOL">💎 SOL (Traditional)</SelectItem>
+                    <SelectItem value="USDC">💵 USDC (Traditional)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  {formData.paymentProtocol === "X402" &&
+                    "AI agent pays automatically"}
+                  {formData.paymentProtocol === "CASH" &&
+                    "Ultra-low fees (0.05%)"}
+                  {(formData.paymentProtocol === "SOL" ||
+                    formData.paymentProtocol === "USDC") &&
+                    "Standard Solana payment"}
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="autoPayThreshold">
+                  Auto-Pay Score Threshold
+                </Label>
+                <Input
+                  id="autoPayThreshold"
+                  type="number"
+                  step="1"
+                  min="0"
+                  max="100"
+                  placeholder="70"
+                  value={formData.autoPayThreshold}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      autoPayThreshold: e.target.value,
+                    })
+                  }
+                />
+                <p className="text-xs text-muted-foreground">
+                  Payment triggers when AI score ≥{" "}
+                  {formData.autoPayThreshold || "70"}
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="flex gap-3 pt-4">
