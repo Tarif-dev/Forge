@@ -4,21 +4,54 @@ import { prisma } from "@/lib/prisma";
 // GET /api/users/[walletAddress] - Get user profile
 export async function GET(
   request: NextRequest,
-  { params }: { params: { walletAddress: string } }
+  { params }: { params: Promise<{ walletAddress: string }> }
 ) {
   try {
+    const { walletAddress } = await params;
+    const searchParams = request.nextUrl.searchParams;
+    const includeBounties = searchParams.get("include") === "bounties";
+
     const user = await prisma.user.findUnique({
-      where: { walletAddress: params.walletAddress },
+      where: { walletAddress },
       include: {
-        createdBounties: {
-          select: {
-            id: true,
-            title: true,
-            reward: true,
-            status: true,
-            createdAt: true,
-          },
-        },
+        createdBounties: includeBounties
+          ? {
+              include: {
+                applications: {
+                  include: {
+                    user: {
+                      select: {
+                        id: true,
+                        username: true,
+                        walletAddress: true,
+                        reputationScore: true,
+                      },
+                    },
+                  },
+                  orderBy: {
+                    createdAt: "desc",
+                  },
+                },
+                _count: {
+                  select: {
+                    applications: true,
+                  },
+                },
+              },
+            }
+          : {
+              select: {
+                id: true,
+                title: true,
+                reward: true,
+                rewardToken: true,
+                status: true,
+                difficulty: true,
+                paymentProtocol: true,
+                autoPayThreshold: true,
+                createdAt: true,
+              },
+            },
         applications: {
           include: {
             bounty: {
@@ -26,6 +59,7 @@ export async function GET(
                 id: true,
                 title: true,
                 reward: true,
+                rewardToken: true,
                 status: true,
               },
             },
@@ -45,13 +79,20 @@ export async function GET(
       // Create new user if doesn't exist
       const newUser = await prisma.user.create({
         data: {
-          walletAddress: params.walletAddress,
+          walletAddress,
         },
       });
       return NextResponse.json(newUser);
     }
 
-    return NextResponse.json(user);
+    // Rename createdBounties to bountiesCreated for consistency
+    const response = {
+      ...user,
+      bountiesCreated: user.createdBounties,
+    };
+    delete (response as any).createdBounties;
+
+    return NextResponse.json(response);
   } catch (error) {
     console.error("Error fetching user:", error);
     return NextResponse.json(
@@ -64,14 +105,15 @@ export async function GET(
 // PATCH /api/users/[walletAddress] - Update user profile
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { walletAddress: string } }
+  { params }: { params: Promise<{ walletAddress: string }> }
 ) {
   try {
+    const { walletAddress } = await params;
     const body = await request.json();
     const { username, email, githubUsername, avatarUrl, bio } = body;
 
     const user = await prisma.user.update({
-      where: { walletAddress: params.walletAddress },
+      where: { walletAddress },
       data: {
         ...(username && { username }),
         ...(email && { email }),

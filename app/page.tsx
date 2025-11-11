@@ -23,7 +23,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col gap-16 pb-16 w-full">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-linear-to-b from-primary/10 via-secondary/5 to-background pt-20 pb-32 w-full">
+      <section className="relative overflow-hidden bg-linear-to-b from-primary/5 via-secondary/5 to-white pt-20 pb-32 w-full">
         <div className="container px-4 mx-auto max-w-7xl">
           <div className="mx-auto max-w-4xl text-center space-y-8">
             <Badge variant="secondary" className="mb-4">
@@ -55,8 +55,8 @@ export default function HomePage() {
         </div>
 
         {/* Floating Elements */}
-        <div className="absolute top-20 left-10 w-20 h-20 bg-primary/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 right-10 w-32 h-32 bg-secondary/20 rounded-full blur-3xl animate-pulse delay-1000" />
+        <div className="absolute top-20 left-10 w-20 h-20 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-20 right-10 w-32 h-32 bg-secondary/10 rounded-full blur-3xl animate-pulse delay-1000" />
       </section>
 
       {/* Stats Section */}
@@ -276,7 +276,7 @@ export default function HomePage() {
 
       {/* CTA Section */}
       <section className="container px-4 mx-auto max-w-7xl">
-        <Card className="bg-linear-to-r from-primary/10 via-secondary/10 to-accent/10 border-primary/20">
+        <Card className="bg-linear-to-r from-primary/5 via-secondary/5 to-accent/5 border-primary/20 shadow-lg">
           <CardHeader className="text-center space-y-4 py-12">
             <CardTitle className="text-3xl md:text-4xl">
               Ready to Start Your Journey?

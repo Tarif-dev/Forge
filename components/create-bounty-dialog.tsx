@@ -34,11 +34,13 @@ export function CreateBountyDialog() {
     description: "",
     reward: "",
     rewardToken: "USDC",
-    difficulty: "Intermediate",
+    difficulty: "INTERMEDIATE",
     category: "Backend",
     tags: "",
     paymentProtocol: "X402",
     autoPayThreshold: "70",
+    githubRepoUrl: "",
+    githubIssueUrl: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -72,11 +74,10 @@ export function CreateBountyDialog() {
           creatorWalletAddress: publicKey.toString(),
           paymentProtocol: formData.paymentProtocol,
           autoPayThreshold: parseFloat(formData.autoPayThreshold),
-          requirements: {
-            codeQuality: "High",
-            tests: "Required",
-            documentation: "Yes",
-          },
+          requirements:
+            "High code quality required. Tests and documentation must be included.",
+          githubRepoUrl: formData.githubRepoUrl || undefined,
+          githubIssueUrl: formData.githubIssueUrl || undefined,
         }),
       });
 
@@ -97,11 +98,13 @@ export function CreateBountyDialog() {
         description: "",
         reward: "",
         rewardToken: "USDC",
-        difficulty: "Intermediate",
+        difficulty: "INTERMEDIATE",
         category: "Backend",
         tags: "",
         paymentProtocol: "X402",
         autoPayThreshold: "70",
+        githubRepoUrl: "",
+        githubIssueUrl: "",
       });
 
       setOpen(false);
@@ -128,7 +131,7 @@ export function CreateBountyDialog() {
           Create Bounty
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create New Bounty</DialogTitle>
           <DialogDescription>
@@ -137,7 +140,8 @@ export function CreateBountyDialog() {
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Title - Full Width */}
           <div className="space-y-2">
             <Label htmlFor="title">Title *</Label>
             <Input
@@ -151,6 +155,7 @@ export function CreateBountyDialog() {
             />
           </div>
 
+          {/* Description - Full Width */}
           <div className="space-y-2">
             <Label htmlFor="description">Description *</Label>
             <Textarea
@@ -160,14 +165,15 @@ export function CreateBountyDialog() {
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                 setFormData({ ...formData, description: e.target.value })
               }
-              rows={5}
+              rows={3}
               required
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          {/* Reward, Token, Difficulty, Category - 4 columns */}
+          <div className="grid grid-cols-4 gap-3">
             <div className="space-y-2">
-              <Label htmlFor="reward">Reward Amount *</Label>
+              <Label htmlFor="reward">Reward *</Label>
               <Input
                 id="reward"
                 type="number"
@@ -199,9 +205,7 @@ export function CreateBountyDialog() {
                 </SelectContent>
               </Select>
             </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="difficulty">Difficulty</Label>
               <Select
@@ -214,10 +218,10 @@ export function CreateBountyDialog() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Beginner">Beginner</SelectItem>
-                  <SelectItem value="Intermediate">Intermediate</SelectItem>
-                  <SelectItem value="Advanced">Advanced</SelectItem>
-                  <SelectItem value="Expert">Expert</SelectItem>
+                  <SelectItem value="BEGINNER">Beginner</SelectItem>
+                  <SelectItem value="INTERMEDIATE">Intermediate</SelectItem>
+                  <SelectItem value="ADVANCED">Advanced</SelectItem>
+                  <SelectItem value="EXPERT">Expert</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -245,6 +249,49 @@ export function CreateBountyDialog() {
             </div>
           </div>
 
+          {/* Payment Settings and Tags - 2 columns */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="paymentProtocol">💰 Payment Protocol</Label>
+              <Select
+                value={formData.paymentProtocol}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, paymentProtocol: value })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="X402">🤖 x402 Autonomous</SelectItem>
+                  <SelectItem value="CASH">⚡ Phantom CASH</SelectItem>
+                  <SelectItem value="SOL">💎 SOL</SelectItem>
+                  <SelectItem value="USDC">💵 USDC</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="autoPayThreshold">Auto-Pay Score (≥)</Label>
+              <Input
+                id="autoPayThreshold"
+                type="number"
+                step="1"
+                min="0"
+                max="100"
+                placeholder="70"
+                value={formData.autoPayThreshold}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    autoPayThreshold: e.target.value,
+                  })
+                }
+              />
+            </div>
+          </div>
+
+          {/* Tags - Full Width */}
           <div className="space-y-2">
             <Label htmlFor="tags">Tags (comma-separated)</Label>
             <Input
@@ -257,75 +304,34 @@ export function CreateBountyDialog() {
             />
           </div>
 
-          {/* HACKATHON INTEGRATION: Payment Protocol Selection */}
-          <div className="border-t pt-4 space-y-4">
-            <div className="flex items-center gap-2">
-              <Label className="text-base font-semibold">
-                💰 Payment Settings
-              </Label>
-              <span className="text-xs text-muted-foreground">
-                (Hackathon Features)
-              </span>
+          {/* GitHub URLs - 2 columns */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="githubRepoUrl">� GitHub Repo (Optional)</Label>
+              <Input
+                id="githubRepoUrl"
+                placeholder="https://github.com/username/repo"
+                value={formData.githubRepoUrl}
+                onChange={(e) =>
+                  setFormData({ ...formData, githubRepoUrl: e.target.value })
+                }
+              />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="paymentProtocol">Payment Protocol</Label>
-                <Select
-                  value={formData.paymentProtocol}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, paymentProtocol: value })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="X402">🤖 x402 Autonomous</SelectItem>
-                    <SelectItem value="CASH">⚡ Phantom CASH</SelectItem>
-                    <SelectItem value="SOL">💎 SOL (Traditional)</SelectItem>
-                    <SelectItem value="USDC">💵 USDC (Traditional)</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-muted-foreground">
-                  {formData.paymentProtocol === "X402" &&
-                    "AI agent pays automatically"}
-                  {formData.paymentProtocol === "CASH" &&
-                    "Ultra-low fees (0.05%)"}
-                  {(formData.paymentProtocol === "SOL" ||
-                    formData.paymentProtocol === "USDC") &&
-                    "Standard Solana payment"}
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="autoPayThreshold">
-                  Auto-Pay Score Threshold
-                </Label>
-                <Input
-                  id="autoPayThreshold"
-                  type="number"
-                  step="1"
-                  min="0"
-                  max="100"
-                  placeholder="70"
-                  value={formData.autoPayThreshold}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      autoPayThreshold: e.target.value,
-                    })
-                  }
-                />
-                <p className="text-xs text-muted-foreground">
-                  Payment triggers when AI score ≥{" "}
-                  {formData.autoPayThreshold || "70"}
-                </p>
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="githubIssueUrl">🔗 GitHub Issue (Optional)</Label>
+              <Input
+                id="githubIssueUrl"
+                placeholder="https://github.com/username/repo/issues/123"
+                value={formData.githubIssueUrl}
+                onChange={(e) =>
+                  setFormData({ ...formData, githubIssueUrl: e.target.value })
+                }
+              />
             </div>
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-3 pt-2">
             <Button
               type="button"
               variant="outline"

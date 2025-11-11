@@ -15,7 +15,7 @@ export class CodeEvaluationAgent {
   private model;
 
   constructor() {
-    this.model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    this.model = genAI.getGenerativeModel({ model: "gemini-2.5" });
   }
 
   async evaluateSubmission(

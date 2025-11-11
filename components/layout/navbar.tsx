@@ -24,6 +24,8 @@ export function Navbar() {
   const navItems = [
     { href: "/", label: "Home" },
     { href: "/bounties", label: "Bounties" },
+    { href: "/my-bounties", label: "My Bounties" },
+    { href: "/profile", label: "Profile" },
     { href: "/agents", label: "Agents" },
     { href: "/reputation", label: "Reputation" },
   ];
@@ -52,7 +54,7 @@ export function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-white/80 backdrop-blur-md shadow-sm">
       <div className="container flex h-16 items-center justify-between px-4 mx-auto max-w-7xl">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2">
